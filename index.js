@@ -30,11 +30,37 @@ async function run() {
 
     const userCollection = client.db('eventManagement').collection('users');
 
+    const eventCollection = client.db('eventManagement').collection('events');
+
     app.get('/', (req, res) => {
       res.send("simple crud is running");
     })
 
-    
+    app.post('/register', async (req, res) => {
+      const data = req.body;
+      const isExist = await userCollection.findOne({ email: data.email });
+      if (isExist)
+        return res.send({ message: 'user already exist.', insertedId: null });
+      const result = await userCollection.insertOne(data);
+      res.send(result);
+    });
+
+    app.get('/role', async (req, res) => {
+      const options = {
+        projection: { _id: 0, role: 1 }
+      }
+      const result = await userCollection.findOne({ email: req.query.email }, options);
+      res.send(result);
+    })
+
+
+    app.post('/add-event', async (req, res) => {
+      const data = req.body;
+      const result = await eventCollection.insertOne(data);
+      res.send(result);
+    })
+
+
   } finally {
   }
 }
