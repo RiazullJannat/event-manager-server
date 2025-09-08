@@ -121,6 +121,11 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/featured-event', async (req, res) => {
+      const result = await eventCollection.find().limit(3).toArray();
+      res.send(result);
+    })
+
   } finally {
   }
 }
