@@ -79,6 +79,47 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/my-bookings', async (req, res) => {
+      const { email } = req.query;
+      const result = await eventRegistrationCollection.aggregate([
+        {
+          $match: { email: email }
+        },
+        {
+          $addFields: {
+            objId: { $toObjectId: '$eventId' }
+          }
+        },
+        {
+          $lookup: {
+            from: 'events',
+            localField: 'objId',
+            foreignField: '_id',
+            as: 'bookedEvents'
+          }
+        },
+        {
+          $unwind: '$bookedEvents'
+        },
+        {
+          $addFields: {
+            eventName: 'bookedEvents.eventName',
+            data: 'bookedEvents.date',
+            image:'bookedEvents.image',
+          }
+        },
+        {
+          $project: {
+            eventName: 1,
+            data: 1,
+            tickets:1,
+            _id:0,
+          }
+        }
+      ]).toArray();
+      res.send(result);
+    })
+
   } finally {
   }
 }
