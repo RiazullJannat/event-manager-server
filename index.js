@@ -63,7 +63,14 @@ async function run() {
     })
 
     app.get('/events', async (req, res) => {
-      const result = await eventCollection.find().toArray();
+      const { category } = req.query;
+      let result;
+      if (category === 'all') {
+        result = await eventCollection.find().toArray();
+      }
+      else {
+        result = await eventCollection.find({category:category}).toArray();
+      }
       res.send(result);
     })
 
