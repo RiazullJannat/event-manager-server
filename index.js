@@ -103,17 +103,18 @@ async function run() {
         },
         {
           $addFields: {
-            eventName: 'bookedEvents.eventName',
-            data: 'bookedEvents.date',
-            image:'bookedEvents.image',
+            eventName: '$bookedEvents.eventName',
+            date: '$bookedEvents.date',
+            image: '$bookedEvents.image',
           }
         },
         {
           $project: {
             eventName: 1,
-            data: 1,
-            tickets:1,
-            _id:0,
+            date: 1,
+            tickets: 1,
+            image: 1,
+            _id: 1,
           }
         }
       ]).toArray();
