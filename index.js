@@ -32,6 +32,8 @@ async function run() {
 
     const eventCollection = client.db('eventManagement').collection('events');
 
+    const eventRegistrationCollection = client.db('eventManagement').collection('registrations');
+
     app.get('/', (req, res) => {
       res.send("simple crud is running");
     })
@@ -68,6 +70,12 @@ async function run() {
     app.get('/events/:id', async (req, res) => {
       const id = req.params.id;
       const result = await eventCollection.findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    })
+
+    app.post('/event/registration', async (req, res) => {
+      const data = req.body;
+      const result = await eventRegistrationCollection.insertOne(data);
       res.send(result);
     })
 
