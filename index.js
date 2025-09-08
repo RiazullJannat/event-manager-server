@@ -34,6 +34,8 @@ async function run() {
 
     const eventRegistrationCollection = client.db('eventManagement').collection('registrations');
 
+    const reviewsCollection = client.db('eventManagement').collection('reviews');
+
     app.get('/', (req, res) => {
       res.send("simple crud is running");
     })
@@ -69,7 +71,7 @@ async function run() {
         result = await eventCollection.find().toArray();
       }
       else {
-        result = await eventCollection.find({category:category}).toArray();
+        result = await eventCollection.find({ category: category }).toArray();
       }
       res.send(result);
     })
@@ -130,6 +132,12 @@ async function run() {
 
     app.get('/featured-event', async (req, res) => {
       const result = await eventCollection.find().limit(3).toArray();
+      res.send(result);
+    })
+
+    app.post('/review', async (req, res) => {
+      const data = req.body;
+      const result = await reviewsCollection.insertOne(data);
       res.send(result);
     })
 
